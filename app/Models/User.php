@@ -54,4 +54,31 @@ class User extends Authenticatable
     {
         return $this->hasMany(Membership::class);
     }
+
+    public function getActiveMembership(): ?Membership
+    {
+        $membership = $this->memberships()->where('status', 1)->first();
+        if($membership){
+            return $membership;
+        }
+        return null;
+    }
+
+    public function getMembershipEndingAttribute()
+    {
+        $membership = $this->memberships()->where('status', 1)->first();
+        if($membership){
+            return $membership->end_date->diffForHumans();
+        }
+        return 'Inactive';
+    }
+
+    public function getContractNameAttribute()
+    {
+        $membership = $this->getActiveMembership();
+        if($membership){
+            return $this->membership->contract->name;
+        }
+
+    }
 }

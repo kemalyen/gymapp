@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Contract;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -18,12 +19,12 @@ class MembershipFactory extends Factory
     public function definition(): array
     {
         $start = $this->faker->dateTimeBetween('-6 months', 'now');
-        $end = $this->faker->dateTimeBetween('+3 months', '+1 year');        
+        $end = $this->faker->dateTimeBetween('+3 months', '+1 year');
         return [
             'contact_id' => Contract::all()->random()->id,
             'status' => 1,
-            'start_date' => $start,
-            'end_date' => $end
+            'start_date' => date_format($start, 'Y-m-d'),
+            'end_date' => date_format( $end, 'Y-m-d')
 
         ];
     }
