@@ -16,6 +16,8 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Spatie\Permission\Models\Role;
+use Filament\Infolists\Components;
+use Filament\Infolists\Infolist;
 
 class MemberResource extends Resource
 {
@@ -122,6 +124,12 @@ class MemberResource extends Resource
             'index' => Pages\ListMembers::route('/'),
             'create' => Pages\CreateMember::route('/create'),
             'edit' => Pages\EditMember::route('/{record}/edit'),
+            'view' => Pages\ViewUser::route('/{record}'),
         ];
+    }
+    public static function infolist(Infolist $infolist): Infolist
+    {
+        return $infolist
+            ->schema([]);
     }
 }
