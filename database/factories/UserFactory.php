@@ -56,6 +56,16 @@ class UserFactory extends Factory
      *
      * @return Factory
      */
+    public function trial(): UserFactory
+    {
+        return $this->assignRole('trial');
+    }
+
+    /**
+     * Indicate that the user is an admin.
+     *
+     * @return Factory
+     */
     public function admin(): UserFactory
     {
         return $this->assignRole('admin');

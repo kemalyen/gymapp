@@ -28,11 +28,16 @@ class DatabaseSeeder extends Seeder
         Role::create(['name' => 'admin']);
         Role::create(['name' => 'trainer']);
         Role::create(['name' => 'staff']);
+        Role::create(['name' => 'trial']);
         Contract::factory(5)->create();
 
         User::factory(100)->member()
             ->has(Membership::factory())
             ->create();
+
+        User::factory(10)->trial()
+            ->has(Membership::factory())
+            ->create();            
 
 
         User::factory(5)->trainer()->create();

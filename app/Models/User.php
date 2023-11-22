@@ -8,8 +8,10 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
+use Filament\Models\Contracts\FilamentUser;
+use Filament\Panel;
 
-class User extends Authenticatable
+class User extends Authenticatable implements FilamentUser
 {
     use HasApiTokens, HasFactory, Notifiable;
     use HasRoles;
@@ -24,6 +26,11 @@ class User extends Authenticatable
         'email',
         'password',
     ];
+
+    public function canAccessPanel(Panel $panel): bool
+    {
+        return true; //str_ends_with($this->email, '@yourdomain.com') && $this->hasVerifiedEmail();
+    }
 
     /**
      * The attributes that should be hidden for serialization.
@@ -64,7 +71,7 @@ class User extends Authenticatable
     public function getActiveMembership(): ?Membership
     {
         $membership = $this->memberships()->where('status', 1)->first();
-        if($membership){
+        if ($membership) {
             return $membership;
         }
         return null;
@@ -73,7 +80,7 @@ class User extends Authenticatable
     public function getMembershipEndingAttribute()
     {
         $membership = $this->memberships()->where('status', 1)->first();
-        if($membership){
+        if ($membership) {
             return $membership->end_date->diffForHumans();
         }
         return 'Inactive';
@@ -82,9 +89,10 @@ class User extends Authenticatable
     public function getContractNameAttribute()
     {
         $membership = $this->getActiveMembership();
-        if($membership){
+        if ($membership) {
             return $membership?->contract?->name;
         }
         return $this->membership;
     }
+ 
 }
