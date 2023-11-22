@@ -67,6 +67,12 @@ class User extends Authenticatable implements FilamentUser
         return $this->profile->phone;
     }
 
+    public function getAddressAttribute()
+    {
+        $profile = $this->profile;
+        $address = $profile->address_line_1 .PHP_EOL . '<br>'. $profile->address_line_2 .PHP_EOL . '<br>'. $profile->porst_code .PHP_EOL . '<br>'. $profile->city .' / '. $profile->country;
+        return $address;
+    }
 
     public function getActiveMembership(): ?Membership
     {
@@ -75,6 +81,36 @@ class User extends Authenticatable implements FilamentUser
             return $membership;
         }
         return null;
+    }
+
+
+    public function getMemberStatusAttribute(): ?string
+    {
+        $membership = $this->memberships()->where('status', 1)->first();
+        if ($membership) {
+            return 'Active';
+        }
+        return 'Inactive';
+    }
+
+
+    public function getMembershipStartedAtAttribute()
+    {
+        $membership = $this->memberships()->where('status', 1)->first();
+        if ($membership) {
+            return $membership->start_date->format('d M Y');
+        }
+        return 'Inactive';
+    }
+
+
+    public function getMembershipEndingAtAttribute()
+    {
+        $membership = $this->memberships()->where('status', 1)->first();
+        if ($membership) {
+            return $membership->end_date->format('d M Y');
+        }
+        return 'Inactive';
     }
 
     public function getMembershipEndingAttribute()

@@ -124,12 +124,54 @@ class MemberResource extends Resource
             'index' => Pages\ListMembers::route('/'),
             'create' => Pages\CreateMember::route('/create'),
             'edit' => Pages\EditMember::route('/{record}/edit'),
-            'view' => Pages\ViewUser::route('/{record}'),
+            'view' => Pages\ViewMember::route('/{record}'),
         ];
     }
     public static function infolist(Infolist $infolist): Infolist
     {
         return $infolist
-            ->schema([]);
+            ->schema([
+                Components\Split::make([
+                    Components\Grid::make(2)
+                        ->schema([
+                            Components\Group::make([
+                                Components\TextEntry::make('name')->label('Name'),
+                                Components\TextEntry::make('name')->label('Email'),
+                                Components\TextEntry::make('phone')->label('Mobile Phone'),
+
+                            ]),
+
+                            Components\Group::make([
+                                Components\TextEntry::make('member_status')
+                                ->badge()
+                                ->color(fn (User $user) => $user->member_status ? 'success':'error' ),
+                            ]),
+                        ])
+                ]),
+
+                Components\Section::make('Membership')
+                    ->schema([
+                        Components\Grid::make(3)
+                            ->schema([
+                                Components\TextEntry::make('contract_name')->label('Membership Plan'),
+                                Components\TextEntry::make('membership_started_at')->label('Started At'),
+                                Components\TextEntry::make('membership_ending_at')->label('Ending Date'),
+                            ]),
+                    ])
+                    ->collapsible(),
+
+                    Components\Section::make('Contact Information')
+                    ->schema([
+                        Components\Grid::make(3)
+                            ->schema([
+ 
+                                Components\TextEntry::make('address')->label('Address')->html(true),
+                                Components\TextEntry::make('profile.phone')->label('Mobile Phone'),
+                                Components\TextEntry::make('membership_ending_at')->label('Ending Date'),
+                            ]),
+                    ])
+                    ->collapsible(),
+
+            ]);
     }
 }
