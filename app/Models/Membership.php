@@ -22,6 +22,6 @@ class Membership extends Model
 
     public function contract()
     {
-        return $this->belongsTo(Contract::class);
+        return $this->belongsTo(Contract::class, 'contact_id', 'id');
     }
 }

@@ -36,7 +36,11 @@ class MemberResource extends Resource
     {
         return $table
             ->columns([
+                TextColumn::make('id'),
                 TextColumn::make('name'),
+                TextColumn::make('email'),
+                TextColumn::make('phone_number'),
+                TextColumn::make('contract_name')->label('Membership Plan'),
                 TextColumn::make('membership_ending')
             ])
             ->filters([
@@ -44,6 +48,7 @@ class MemberResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\ViewAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

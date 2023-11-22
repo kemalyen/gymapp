@@ -55,6 +55,12 @@ class User extends Authenticatable
         return $this->hasMany(Membership::class);
     }
 
+    public function getPhoneNumberAttribute()
+    {
+        return $this->profile->phone;
+    }
+
+
     public function getActiveMembership(): ?Membership
     {
         $membership = $this->memberships()->where('status', 1)->first();
@@ -77,8 +83,8 @@ class User extends Authenticatable
     {
         $membership = $this->getActiveMembership();
         if($membership){
-            return $this->membership->contract->name;
+            return $membership?->contract?->name;
         }
-
+        return $this->membership;
     }
 }
