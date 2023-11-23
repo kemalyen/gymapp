@@ -50,6 +50,7 @@ class User extends Authenticatable implements FilamentUser
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
+        'created_at' => 'datetime:Y-m-d',
     ];
 
     public function profile()
@@ -60,6 +61,11 @@ class User extends Authenticatable implements FilamentUser
     public function memberships()
     {
         return $this->hasMany(Membership::class);
+    }
+
+    public function attendances()
+    {
+        return $this->hasMany(Attendance::class);
     }
 
     public function getPhoneNumberAttribute()
@@ -129,6 +135,11 @@ class User extends Authenticatable implements FilamentUser
             return $membership?->contract?->name;
         }
         return $this->membership;
+    }
+
+    public function getMemberSinceAttribute()
+    {
+        return $this->created_at->format('d M Y');
     }
  
 }

@@ -89,11 +89,12 @@ class MemberResource extends Resource
                 TextColumn::make('phone_number'),
                 TextColumn::make('roles.name'),
                 TextColumn::make('contract_name')->label('Membership Plan'),
-                TextColumn::make('membership_ending')
+                TextColumn::make('membership_ending'),
+
+                
             ])
             ->filters([
                 Tables\Filters\SelectFilter::make('roles')
-                    //->options(Role::whereIn('name', ['member', 'trial'])->pluck('name', 'name')->toArray())
                     ->relationship(
                         'roles',
                         'name',
@@ -101,8 +102,12 @@ class MemberResource extends Resource
                     ),
             ])
             ->actions([
+                Tables\Actions\Action::make('attendence_report')
+                ->url(fn (User $user): string => static::getUrl('attendances', ['record' => $user->id]))
+                ->icon('heroicon-o-book-open'),
+
                 Tables\Actions\EditAction::make(),
-                Tables\Actions\ViewAction::make()->slideOver(),
+                Tables\Actions\ViewAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -125,29 +130,34 @@ class MemberResource extends Resource
             'create' => Pages\CreateMember::route('/create'),
             'edit' => Pages\EditMember::route('/{record}/edit'),
             'view' => Pages\ViewMember::route('/{record}'),
+            'attendances' => Pages\AttendanceReport::route('/{record}/attendances'),
         ];
     }
     public static function infolist(Infolist $infolist): Infolist
     {
         return $infolist
             ->schema([
-                Components\Split::make([
-                    Components\Grid::make(2)
-                        ->schema([
-                            Components\Group::make([
-                                Components\TextEntry::make('name')->label('Name'),
-                                Components\TextEntry::make('name')->label('Email'),
-                                Components\TextEntry::make('phone')->label('Mobile Phone'),
 
-                            ]),
+                Components\Section::make('Profile')
+                    ->schema([
+                        Components\Grid::make(2)
+                            ->schema([
 
-                            Components\Group::make([
-                                Components\TextEntry::make('member_status')
-                                ->badge()
-                                ->color(fn (User $user) => $user->member_status ? 'success':'error' ),
-                            ]),
-                        ])
-                ]),
+                                Components\Group::make([
+                                    Components\TextEntry::make('name')->label('Name'),
+                                    Components\TextEntry::make('name')->label('Email'),
+                                    Components\TextEntry::make('phone')->label('Mobile Phone'),
+                                ])->columns(3),
+
+                                Components\Group::make([
+                                    Components\TextEntry::make('member_status')
+                                        ->badge()
+                                        ->color(fn (User $user) => $user->member_status ? 'success' : 'error'),
+                                    Components\TextEntry::make('member_since')->label('Member Since')
+                                ])->columns(2),
+                            ])
+                    ]),
+
 
                 Components\Section::make('Membership')
                     ->schema([
@@ -160,11 +170,11 @@ class MemberResource extends Resource
                     ])
                     ->collapsible(),
 
-                    Components\Section::make('Contact Information')
+                Components\Section::make('Contact Information')
                     ->schema([
                         Components\Grid::make(3)
                             ->schema([
- 
+
                                 Components\TextEntry::make('address')->label('Address')->html(true),
                                 Components\TextEntry::make('profile.phone')->label('Mobile Phone'),
                                 Components\TextEntry::make('membership_ending_at')->label('Ending Date'),
