@@ -1,0 +1,23 @@
+@import '/vendor/filament/filament/resources/css/theme.css';
+
+@config 'tailwind.config.js'; 
+
+.fi-topbar  {
+    background: #E52928  no-repeat top !important;
+}
+
+nav{
+    background: #E52928  url(/images/exertis-chevron.png) no-repeat top !important;
+}
+
+.fi-sidebar-header{
+    background: #E52928  !important;
+}
+
+.fi-sidebar-nav{
+    background: #E52928  !important;
+}
+
+.fi-breadcrumbs{
+    background: #FAFAFA !important;
+}

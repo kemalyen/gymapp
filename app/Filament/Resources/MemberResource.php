@@ -7,6 +7,10 @@ use App\Filament\Resources\MemberResource\Pages;
 use App\Filament\Resources\MemberResource\RelationManagers;
 use App\Models\User;
 use Filament\Forms;
+use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\Fieldset;
+use Filament\Forms\Components\Grid;
+use Filament\Forms\Components\Section;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -33,47 +37,58 @@ class MemberResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('name')
-                    ->label('Full Name')
-                    ->required()
-                    ->maxLength(250),
+                Section::make('Contact')
+                    ->schema([
+                        Forms\Components\TextInput::make('name')
+                            ->label('Full Name')
+                            ->required()
+                            ->maxLength(250),
 
-                Forms\Components\TextInput::make('email')
-                    ->label('Email')
-                    ->required()
-                    ->maxLength(250)
-                    ->unique(User::class, 'email', ignoreRecord: true),
+                        Forms\Components\TextInput::make('email')
+                            ->label('Email')
+                            ->required()
+                            ->maxLength(250)
+                            ->unique(User::class, 'email', ignoreRecord: true),
+
+                        Forms\Components\TextInput::make('phone')
+                            ->label('Mobile Phone')
+                            ->required()
+                            ->maxLength(250),
+                    ]),
 
 
-                Forms\Components\TextInput::make('phone')
-                    ->label('Mobile Phone')
-                    ->required()
-                    ->maxLength(250),
+                Section::make('Address')
+                    ->schema([
+                        Forms\Components\TextInput::make('address_line_1')
+                            ->label('Address line')
+                            ->required()
+                            ->maxLength(250)->columnSpan(2),
 
-                Forms\Components\TextInput::make('address_line_1')
-                    ->label('Address line')
-                    ->required()
-                    ->maxLength(250)->columnSpan(2),
+                        Forms\Components\TextInput::make('address_line_2')
+                            ->label('Address line')
+                            ->required()
+                            ->maxLength(250)->columnSpan(2),
 
-                Forms\Components\TextInput::make('address_line_2')
-                    ->label('Address line')
-                    ->required()
-                    ->maxLength(250)->columnSpan(2),
+                        Grid::make()
+                            ->schema([
 
-                Forms\Components\TextInput::make('city')
-                    ->label('city')
-                    ->required()
-                    ->maxLength(250),
+                                Forms\Components\TextInput::make('post_code')
+                                    ->label('Post Code')
+                                    ->required()
+                                    ->maxLength(25),
 
-                LocalizedCountrySelect::make('country')
-                    ->label('county')
-                    ->default('UK')
-                    ->required(),
+                                Forms\Components\TextInput::make('city')
+                                    ->label('City')
+                                    ->required()
+                                    ->maxLength(50),
 
-                Forms\Components\TextInput::make('post_code')
-                    ->label('Post Code')
-                    ->required()
-                    ->maxLength(250),
+                                LocalizedCountrySelect::make('country')
+                                    ->label('County')
+                                    ->default('UK')
+                                    ->required(),
+
+                            ])->columns(3)
+                    ]),
 
             ]);
     }
@@ -83,15 +98,10 @@ class MemberResource extends Resource
         return $table
             ->query(User::query()->role(['member', 'trial']))
             ->columns([
-                TextColumn::make('id'),
                 TextColumn::make('name')->searchable(),
-                TextColumn::make('email')->searchable(),
-                TextColumn::make('phone_number'),
                 TextColumn::make('roles.name'),
                 TextColumn::make('contract_name')->label('Membership Plan'),
                 TextColumn::make('membership_ending'),
-
-                
             ])
             ->filters([
                 Tables\Filters\SelectFilter::make('roles')
@@ -103,8 +113,8 @@ class MemberResource extends Resource
             ])
             ->actions([
                 Tables\Actions\Action::make('attendence_report')
-                ->url(fn (User $user): string => static::getUrl('attendances', ['record' => $user->id]))
-                ->icon('heroicon-o-book-open'),
+                    ->url(fn (User $user): string => static::getUrl('attendances', ['record' => $user->id]))
+                    ->icon('heroicon-o-book-open'),
 
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\ViewAction::make(),
