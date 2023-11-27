@@ -76,9 +76,12 @@ class User extends Authenticatable implements FilamentUser
     public function getAddressAttribute()
     {
         $profile = $this->profile;
-        $address = $profile->address_line_1 .PHP_EOL . '<br>'. $profile->address_line_2 .PHP_EOL . '<br>'. $profile->porst_code .PHP_EOL . '<br>'. $profile->city .' / '. $profile->country;
-        return $address;
-    }
+        if ($profile){
+            $address = $profile->address_line_1 .PHP_EOL . '<br>'. $profile->address_line_2 .PHP_EOL . '<br>'. $profile->porst_code .PHP_EOL . '<br>'. $profile->city .' / '. $profile->country;
+            return $address;
+        }
+        return;
+     }
 
     public function getActiveMembership(): ?Membership
     {

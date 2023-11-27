@@ -6,11 +6,13 @@ use App\Filament\Forms\Components\LocalizedCountrySelect;
 use App\Filament\Resources\MemberResource\Pages;
 use App\Filament\Resources\MemberResource\RelationManagers;
 use App\Models\User;
+use Filament\Actions\CreateAction;
 use Filament\Forms;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Fieldset;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -22,6 +24,7 @@ use Filament\Tables\Filters\SelectFilter;
 use Spatie\Permission\Models\Role;
 use Filament\Infolists\Components;
 use Filament\Infolists\Infolist;
+use Filament\Notifications\Actions\Action;
 
 class MemberResource extends Resource
 {
@@ -50,23 +53,37 @@ class MemberResource extends Resource
                             ->maxLength(250)
                             ->unique(User::class, 'email', ignoreRecord: true),
 
-                        Forms\Components\TextInput::make('phone')
-                            ->label('Mobile Phone')
-                            ->required()
-                            ->maxLength(250),
+
+                        Select::make('roles')
+                            ->label('Trial / Member')
+                            ->options(['member', 'trial'])
+                            ->default('trial')
+                            ->required(),
+
+
+                        Fieldset::make('')
+                            ->relationship('profile')
+                            ->schema([
+                                Forms\Components\TextInput::make('phone')
+
+                                    ->label('Mobile Phone')
+                                    ->required()
+                                    ->maxLength(250),
+                            ]),
+
                     ]),
-
-
                 Section::make('Address')
+                    ->relationship('profile')
                     ->schema([
                         Forms\Components\TextInput::make('address_line_1')
+
                             ->label('Address line')
                             ->required()
                             ->maxLength(250)->columnSpan(2),
 
                         Forms\Components\TextInput::make('address_line_2')
+
                             ->label('Address line')
-                            ->required()
                             ->maxLength(250)->columnSpan(2),
 
                         Grid::make()
@@ -83,20 +100,20 @@ class MemberResource extends Resource
                                     ->maxLength(50),
 
                                 LocalizedCountrySelect::make('country')
-                                    ->label('County')
-                                    ->default('UK')
+                                    ->label('country')
+                                    ->default('GB')
                                     ->required(),
-
                             ])->columns(3)
                     ]),
 
             ]);
     }
 
+
     public static function table(Table $table): Table
     {
         return $table
-            ->query(User::query()->role(['member', 'trial']))
+            ->query(User::query()->role(['member', 'trial'])->orderByDesc('id'))
             ->columns([
                 TextColumn::make('name')->searchable(),
                 TextColumn::make('roles.name'),
@@ -118,6 +135,7 @@ class MemberResource extends Resource
 
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\ViewAction::make(),
+
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

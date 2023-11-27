@@ -20,7 +20,7 @@ class ProfileFactory extends Factory
             'address_line_1' => $this->faker->streetAddress(),
             'address_line_2' => null,
             'city' => $this->faker->city(),
-            'county' => 'UK',
+            'country' => 'UK',
             'post_code' => $this->faker->postcode(),
             'phone' => $this->faker->phoneNumber(),
             'user_id' => 0
