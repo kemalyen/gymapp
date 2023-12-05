@@ -4,7 +4,7 @@ namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
-use App\Models\Contract;
+use App\Models\Plan;
 use App\Models\Membership;
 use App\Models\Profile;
 use App\Models\User;
@@ -21,7 +21,7 @@ class DatabaseSeeder extends Seeder
     {
         User::truncate();
         Role::truncate();
-        Contract::truncate();
+        Plan::truncate();
         Profile::truncate();
         Membership::truncate();
         Role::create(['name' => 'member']);
@@ -29,7 +29,7 @@ class DatabaseSeeder extends Seeder
         Role::create(['name' => 'trainer']);
         Role::create(['name' => 'staff']);
         Role::create(['name' => 'trial']);
-        Contract::factory(5)->create();
+        Plan::factory(5)->create();
 
         User::factory(100)->member()
             ->has(Membership::factory())

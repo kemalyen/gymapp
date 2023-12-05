@@ -5,11 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Contract extends Model
+class Plan extends Model
 {
     use HasFactory;
 
-    public function contracts()
+    public function plans()
     {
         return $this->hasMany(Membership::class);
     }

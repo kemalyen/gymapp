@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('memberships', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->nullable()->index();
-            $table->foreignId('contact_id')->nullable()->index();
+            $table->foreignId('contract_id')->nullable()->index();
             $table->tinyInteger('status')->default(0);
             $table->date('start_date')->nullable();
             $table->date('end_date')->nullable();
