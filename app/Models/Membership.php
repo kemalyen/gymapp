@@ -9,7 +9,7 @@ class Membership extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['plan_id', 'start_date', 'end_date', 'status'];
+    protected $fillable = ['plan_id', 'start_date', 'end_date', 'status', 'user_id'];
 
 
     protected $casts = [

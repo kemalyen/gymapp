@@ -17,7 +17,7 @@ use Filament\Infolists\Components;
 use Filament\Infolists\Infolist;
 use Filament\Tables\Contracts\HasTable;
 
-class AttendanceReport extends Page implements HasTable
+    class AttendanceReport extends Page implements HasTable
 {
     use InteractsWithTable;
 

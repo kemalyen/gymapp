@@ -11,6 +11,7 @@ use Filament\Forms;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -27,21 +28,21 @@ class MembershipResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
     protected static ?int $navigationSort = 3;
-    
+
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-
                 Section::make()
                     ->columns(1)->schema([
                         Select::make('user_id')
                             ->label('Member Name')
-                            ->searchable()
                             ->options(
                                 fn () => User::query()->role(['member'])->pluck('name', 'id'),
-                            )->required(),
-                    ]),
+                            )
+                            ->searchable()
+                            ->required(),
+                    ])->hiddenOn('edit'),
                 Section::make()
                     ->columns(2)->schema([
                         Select::make('plan_id')
@@ -89,6 +90,27 @@ class MembershipResource extends Resource
                     ->dateTime(),
             ])
             ->filters([
+
+                Tables\Filters\SelectFilter::make('user_id')
+                    ->label('Member Name')
+                    ->searchable()
+                    ->options(
+                        fn () => User::query()->role(['member', 'trial'])->pluck('name', 'id'),
+                    ),
+
+                Tables\Filters\SelectFilter::make('status')
+                    ->options([
+                        '0' => 'Inactive', '1' => 'Active'
+                    ]),
+
+                Tables\Filters\SelectFilter::make('plan_id')
+                    ->label('Plan')
+                    ->options(
+                        fn () => Plan::all()->pluck('name', 'id'),
+                    ),
+
+
+
                 Filter::make('created_at')
                     ->form([
                         DatePicker::make('start_date'),
@@ -106,24 +128,6 @@ class MembershipResource extends Resource
                             );
                     }),
 
-                Tables\Filters\SelectFilter::make('status')
-                    ->options([
-                        '0' => 'Inactive', '1' => 'Active'
-                    ]),
-
-                Tables\Filters\SelectFilter::make('plan_id')
-                    ->label('Plan')
-                    ->options(
-                        fn () => Plan::all()->pluck('name', 'id'),
-                    ),
-
-
-                Tables\Filters\SelectFilter::make('user_id')
-                    ->label('Member Name')
-                    ->searchable()
-                    ->options(
-                        fn () => User::query()->role(['member', 'trial'])->pluck('name', 'id'),
-                    ),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),

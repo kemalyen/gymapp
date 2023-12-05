@@ -26,6 +26,10 @@ use Filament\Infolists\Components;
 use Filament\Infolists\Infolist;
 use Filament\Notifications\Actions\Action;
 
+use Filament\Infolists\Components\Actions\Action as InfoAction;
+use Filament;
+use Filament\Facades\Filament as FacadesFilament;
+
 class MemberResource extends Resource
 {
     protected static ?int $navigationSort = 1;
@@ -54,27 +58,24 @@ class MemberResource extends Resource
                             ->unique(User::class, 'email', ignoreRecord: true),
 
 
-                    Select::make('roles')->relationship('roles', 'name')->required(), 
-/* 
-                        Select::make('role')
-                            ->label('Trial / Member')
-                            ->options(['member', 'trial'])
-                            ->default('trial') */
+                        Select::make('roles')->relationship(
+                            'roles',
+                            'name',
+
+                            modifyQueryUsing: fn (Builder $query) => $query->whereIn('name', ['member', 'trial']),
+                        )->required(),
 
 
-                        Fieldset::make('')
-                            ->relationship('profile')
-                            ->schema([
-                                Forms\Components\TextInput::make('phone')
-                                    ->label('Mobile Phone')
-                                    ->required()
-                                    ->maxLength(250),
-                            ]),
 
                     ]),
                 Section::make('Address')
                     ->relationship('profile')
                     ->schema([
+                        Forms\Components\TextInput::make('profile.phone')
+                            ->label('Mobile Phone')
+                            ->required()
+                            ->maxLength(250),
+
                         Forms\Components\TextInput::make('address_line_1')
 
                             ->label('Address line')
@@ -117,7 +118,7 @@ class MemberResource extends Resource
             ->columns([
                 TextColumn::make('name')->searchable(),
                 TextColumn::make('roles.name'),
-                TextColumn::make('Plan_name')->label('Membership Plan'),
+                TextColumn::make('plan_name')->label('Membership Plan'),
                 TextColumn::make('membership_ending'),
             ])
             ->filters([
@@ -134,6 +135,7 @@ class MemberResource extends Resource
                     ->icon('heroicon-o-book-open'),
 
                 Tables\Actions\Action::make('member_plans')
+                    ->label('Membership Plan')
                     ->url(fn (User $user): string => static::getUrl('list-membership-plans', ['record' => $user->id]))
                     ->icon('heroicon-o-book-open'),
 
@@ -170,33 +172,28 @@ class MemberResource extends Resource
     {
         return $infolist
             ->schema([
-
                 Components\Section::make('Profile')
                     ->schema([
-                        Components\Grid::make(2)
+                        Components\Grid::make(1)
                             ->schema([
-
                                 Components\Group::make([
                                     Components\TextEntry::make('name')->label('Name'),
                                     Components\TextEntry::make('name')->label('Email'),
-                                    Components\TextEntry::make('phone')->label('Mobile Phone'),
+                                    Components\TextEntry::make('member_since')->label('Member Since')
                                 ])->columns(3),
 
-                                Components\Group::make([
-                                    Components\TextEntry::make('member_status')
-                                        ->badge()
-                                        ->color(fn (User $user) => $user->member_status != 'Active' ? 'warning' : 'success'),
-                                    Components\TextEntry::make('member_since')->label('Member Since')
-                                ])->columns(2),
                             ])
                     ]),
 
 
-                Components\Section::make('Membership')
+                Filament\Infolists\Components\Section::make('Membership')
                     ->schema([
-                        Components\Grid::make(3)
+                        Components\Grid::make(4)
                             ->schema([
                                 Components\TextEntry::make('plan_name')->label('Membership Plan'),
+                                Components\TextEntry::make('member_status')
+                                    ->badge()
+                                    ->color(fn (User $user) => $user->member_status != 'Active' ? 'warning' : 'success'),
                                 Components\TextEntry::make('membership_started_at')->label('Started At'),
                                 Components\TextEntry::make('membership_ending_at')->label('Ending Date'),
                             ]),

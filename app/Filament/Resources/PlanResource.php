@@ -23,13 +23,13 @@ class PlanResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('name'),
-                Forms\Components\TextInput::make('description'),
+                Forms\Components\TextInput::make('name')->required(),
+                Forms\Components\Textarea::make('description'),
                 Forms\Components\TextInput::make('price')
                     ->required()
                     ->numeric()
                     ->prefix('$'),
-            ]);
+            ])->columns(1);
     }
 
     public static function table(Table $table): Table

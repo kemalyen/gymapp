@@ -1,23 +1,35 @@
 @import '/vendor/filament/filament/resources/css/theme.css';
 
-@config 'tailwind.config.js'; 
+@config 'tailwind.config.js';
 
-.fi-topbar  {
-    background: #E52928  no-repeat top !important;
+.filament-main-topbar {
+    position: relative;
 }
 
-nav{
-    background: #E52928  url(/images/exertis-chevron.png) no-repeat top !important;
+.fi-topbar-item {
+    align-items: end;
 }
 
-.fi-sidebar-header{
-    background: #E52928  !important;
+.fi-topbar {
+    background: #E52928 no-repeat top !important;
+}
+ 
+.fi-logo{
+    margin-right: 130px;
 }
 
-.fi-sidebar-nav{
-    background: #E52928  !important;
+nav {
+    background: #E52928 url(/images/background.png) no-repeat top !important;
 }
 
-.fi-breadcrumbs{
+.fi-sidebar-header {
+    background: #E52928 !important;
+}
+
+.fi-sidebar-nav {
+    background: #E52928 !important;
+}
+
+.fi-breadcrumbs {
     background: #FAFAFA !important;
 }
