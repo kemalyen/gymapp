@@ -131,11 +131,11 @@ class User extends Authenticatable implements FilamentUser
         return 'Inactive';
     }
 
-    public function getContractNameAttribute()
+    public function getPlanNameAttribute()
     {
         $membership = $this->getActiveMembership();
         if ($membership) {
-            return $membership?->contract?->name;
+            return $membership?->Plan?->name;
         }
         return $this->membership;
     }

@@ -3,27 +3,34 @@
 namespace App\Filament\Resources\MemberResource\Pages;
 
 use App\Filament\Resources\MemberResource;
-use App\Models\Attendance;
-use App\Models\User;
+use App\Filament\Resources\MembershipResource;
+use Filament\Actions;
 use Filament\Resources\Pages\Page;
+ 
+use App\Models\User;
 
+use App\Models\Attendance;
+use App\Models\Membership;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Filters\Filter;
 use Illuminate\Database\Eloquent\Builder;
 use Filament\Forms\Components\DatePicker;
+use Filament\Tables\Columns\BadgeColumn;
 use Filament\Infolists\Components;
 use Filament\Infolists\Infolist;
+use Filament\Tables\Actions\Action;
 use Filament\Tables\Contracts\HasTable;
 
-class AttendanceReport extends Page implements HasTable
+class ListMembershipPlans extends Page implements HasTable
 {
     use InteractsWithTable;
 
     protected static string $resource = MemberResource::class;
 
-    protected static string $view = 'filament.resources.member-resource.pages.attendance-report';
+    protected static string $view = 'filament.resources.member-resource.pages.list-plans';
+
 
     public $user;
     public function mount($record)
@@ -31,41 +38,54 @@ class AttendanceReport extends Page implements HasTable
         $this->user = User::find($record);
     }
 
+
     public function table(Table $table): Table
     {
         return $table
-            ->query(Attendance::query()->where('user_id', $this->user->id))
+            ->query(Membership::query()->where('user_id', $this->user->id))
             ->columns([
-                TextColumn::make('attendance_date')->label('Date')
+                TextColumn::make('id')->label('Plan ID'),
+                TextColumn::make('start_date')->label('Start Date')->dateTime('d M Y'),
+                TextColumn::make('end_date')->label('End Date')->dateTime('d M Y'),
+                TextColumn::make('plan_name')->label('Plan'),
+                TextColumn::make('status_text')->label('Status')
+                    ->badge()
+                    ->color(fn (Membership $membership) => $membership->status ? 'success' : 'warning'),
+                TextColumn::make('created_at')->label('Created Date')->dateTime('d M Y H:i'),
             ])
             ->filters([
 
                 Filter::make('created_at')
                     ->form([
-                        DatePicker::make('created_from'),
-                        DatePicker::make('created_until'),
+                        DatePicker::make('start_date'),
+                        DatePicker::make('end_date'),
                     ])
                     ->query(function (Builder $query, array $data): Builder {
                         return $query
                             ->when(
-                                $data['created_from'],
-                                fn (Builder $query, $date): Builder => $query->whereDate('created_at', '>=', $date),
+                                $data['start_date'],
+                                fn (Builder $query, $date): Builder => $query->whereDate('start_date', '>=', $date),
                             )
                             ->when(
-                                $data['created_until'],
-                                fn (Builder $query, $date): Builder => $query->whereDate('created_at', '<=', $date),
+                                $data['end_date'],
+                                fn (Builder $query, $date): Builder => $query->whereDate('end_date', '<=', $date),
                             );
                     })
-            ]);
+            ])
+            ->actions([
+                Action::make('edit')
+                    ->url(fn (Membership $membership): string => route('filament.admin.resources.memberships.edit', ['record' => $membership->id]))
+            ])
+            ;
     }
-
 
     public function memberInfo(Infolist $infolist): Infolist
     {
         return $infolist
             ->record($this->user)
             ->schema([
-               Components\Section::make('Member')
+
+                Components\Section::make('Member')
 
                     ->schema([
                         Components\Grid::make(2)

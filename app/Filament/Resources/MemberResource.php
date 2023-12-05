@@ -117,7 +117,7 @@ class MemberResource extends Resource
             ->columns([
                 TextColumn::make('name')->searchable(),
                 TextColumn::make('roles.name'),
-                TextColumn::make('contract_name')->label('Membership Plan'),
+                TextColumn::make('Plan_name')->label('Membership Plan'),
                 TextColumn::make('membership_ending'),
             ])
             ->filters([
@@ -131,6 +131,10 @@ class MemberResource extends Resource
             ->actions([
                 Tables\Actions\Action::make('attendence_report')
                     ->url(fn (User $user): string => static::getUrl('attendances', ['record' => $user->id]))
+                    ->icon('heroicon-o-book-open'),
+
+                Tables\Actions\Action::make('member_plans')
+                    ->url(fn (User $user): string => static::getUrl('list-membership-plans', ['record' => $user->id]))
                     ->icon('heroicon-o-book-open'),
 
                 Tables\Actions\EditAction::make(),
@@ -159,6 +163,7 @@ class MemberResource extends Resource
             'edit' => Pages\EditMember::route('/{record}/edit'),
             'view' => Pages\ViewMember::route('/{record}'),
             'attendances' => Pages\AttendanceReport::route('/{record}/attendances'),
+            'list-membership-plans' => Pages\ListMembershipPlans::route('/{record}/list-membership-plans'),
         ];
     }
     public static function infolist(Infolist $infolist): Infolist
@@ -180,7 +185,7 @@ class MemberResource extends Resource
                                 Components\Group::make([
                                     Components\TextEntry::make('member_status')
                                         ->badge()
-                                        ->color(fn (User $user) => $user->member_status ? 'success' : 'error'),
+                                        ->color(fn (User $user) => $user->member_status != 'Active' ? 'warning' : 'success'),
                                     Components\TextEntry::make('member_since')->label('Member Since')
                                 ])->columns(2),
                             ])
@@ -191,7 +196,7 @@ class MemberResource extends Resource
                     ->schema([
                         Components\Grid::make(3)
                             ->schema([
-                                Components\TextEntry::make('contract_name')->label('Membership Plan'),
+                                Components\TextEntry::make('plan_name')->label('Membership Plan'),
                                 Components\TextEntry::make('membership_started_at')->label('Started At'),
                                 Components\TextEntry::make('membership_ending_at')->label('Ending Date'),
                             ]),
