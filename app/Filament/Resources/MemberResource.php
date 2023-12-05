@@ -134,7 +134,7 @@ class MemberResource extends Resource
                     ->icon('heroicon-o-book-open'),
 
                 Tables\Actions\Action::make('member_plans')
-                    ->url(fn (User $user): string => static::getUrl('list-Plans', ['record' => $user->id]))
+                    ->url(fn (User $user): string => static::getUrl('list-membership-plans', ['record' => $user->id]))
                     ->icon('heroicon-o-book-open'),
 
                 Tables\Actions\EditAction::make(),
@@ -163,7 +163,7 @@ class MemberResource extends Resource
             'edit' => Pages\EditMember::route('/{record}/edit'),
             'view' => Pages\ViewMember::route('/{record}'),
             'attendances' => Pages\AttendanceReport::route('/{record}/attendances'),
-            'list-plans' => Pages\Listplans::route('/{record}/list-plans'),
+            'list-membership-plans' => Pages\ListMembershipPlans::route('/{record}/list-membership-plans'),
         ];
     }
     public static function infolist(Infolist $infolist): Infolist

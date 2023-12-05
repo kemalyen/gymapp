@@ -3,10 +3,10 @@
 namespace App\Filament\Resources\MemberResource\Pages;
 
 use App\Filament\Resources\MemberResource;
+use App\Filament\Resources\MembershipResource;
 use Filament\Actions;
 use Filament\Resources\Pages\Page;
-
-use Filament\Tables\Plans\HasTable;
+ 
 use App\Models\User;
 
 use App\Models\Attendance;
@@ -20,15 +20,16 @@ use Filament\Forms\Components\DatePicker;
 use Filament\Tables\Columns\BadgeColumn;
 use Filament\Infolists\Components;
 use Filament\Infolists\Infolist;
+use Filament\Tables\Actions\Action;
+use Filament\Tables\Contracts\HasTable;
 
-
-class ListPlans extends Page implements HasTable
+class ListMembershipPlans extends Page implements HasTable
 {
     use InteractsWithTable;
 
     protected static string $resource = MemberResource::class;
 
-    protected static string $view = 'filament.resources.member-resource.pages.list-Plans';
+    protected static string $view = 'filament.resources.member-resource.pages.list-plans';
 
 
     public $user;
@@ -72,7 +73,8 @@ class ListPlans extends Page implements HasTable
                     })
             ])
             ->actions([
- 
+                Action::make('edit')
+                    ->url(fn (Membership $membership): string => route('filament.admin.resources.memberships.edit', ['record' => $membership->id]))
             ])
             ;
     }

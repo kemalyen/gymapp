@@ -6,7 +6,7 @@ use App\Filament\Resources\MemberResource;
 use App\Models\Attendance;
 use App\Models\User;
 use Filament\Resources\Pages\Page;
-use Filament\Tables\Plans\HasTable;
+
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Filament\Tables\Concerns\InteractsWithTable;
@@ -15,6 +15,8 @@ use Illuminate\Database\Eloquent\Builder;
 use Filament\Forms\Components\DatePicker;
 use Filament\Infolists\Components;
 use Filament\Infolists\Infolist;
+use Filament\Tables\Contracts\HasTable;
+
 class AttendanceReport extends Page implements HasTable
 {
     use InteractsWithTable;

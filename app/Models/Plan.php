@@ -9,8 +9,8 @@ class Plan extends Model
 {
     use HasFactory;
 
-    public function plans()
+/*     public function plans()
     {
         return $this->hasMany(Membership::class);
-    }
+    } */
 }

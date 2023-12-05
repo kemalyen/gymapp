@@ -9,6 +9,7 @@ use App\Models\Membership;
 use App\Models\User;
 use Filament\Forms;
 use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -25,23 +26,45 @@ class MembershipResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
+    protected static ?int $navigationSort = 3;
+    
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Select::make('plan_id')
-                    ->label('Available Plans')
-                    ->options(fn () => Plan::all()->pluck('name', 'id'),)
-                    ->default(0)
-                    ->required(),
 
-                Select::make('status')
-                    ->label('Status')
-                    ->options([1 => 'Active', 0 => 'Inactive'])
-                    ->default(0)
-                    ->required(),
-                Forms\Components\DatePicker::make('start_date'),
-                Forms\Components\DatePicker::make('end_date'),
+                Section::make()
+                    ->columns(1)->schema([
+                        Select::make('user_id')
+                            ->label('Member Name')
+                            ->searchable()
+                            ->options(
+                                fn () => User::query()->role(['member'])->pluck('name', 'id'),
+                            )->required(),
+                    ]),
+                Section::make()
+                    ->columns(2)->schema([
+                        Select::make('plan_id')
+                            ->label('Available Plans')
+                            ->options(fn () => Plan::all()->pluck('name', 'id'),)
+                            ->default(0)
+                            ->required(),
+
+                        Select::make('status')
+                            ->label('Status')
+                            ->options([1 => 'Active', 0 => 'Inactive'])
+                            ->default(0)
+                            ->required(),
+                    ]),
+                Section::make()
+                    ->columns(2)->schema(
+                        [
+                            Forms\Components\DatePicker::make('start_date'),
+                            Forms\Components\DatePicker::make('end_date'),
+
+                        ]
+                    ),
+
             ]);
     }
 
