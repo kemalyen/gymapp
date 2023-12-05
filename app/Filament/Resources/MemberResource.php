@@ -54,18 +54,18 @@ class MemberResource extends Resource
                             ->unique(User::class, 'email', ignoreRecord: true),
 
 
-                        Select::make('roles')
+                    Select::make('roles')->relationship('roles', 'name')->required(), 
+/* 
+                        Select::make('role')
                             ->label('Trial / Member')
                             ->options(['member', 'trial'])
-                            ->default('trial')
-                            ->required(),
+                            ->default('trial') */
 
 
                         Fieldset::make('')
                             ->relationship('profile')
                             ->schema([
                                 Forms\Components\TextInput::make('phone')
-
                                     ->label('Mobile Phone')
                                     ->required()
                                     ->maxLength(250),
