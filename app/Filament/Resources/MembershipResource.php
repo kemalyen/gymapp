@@ -78,9 +78,7 @@ class MembershipResource extends Resource
                     ->sortable()
                     ->numeric(),
                 TextColumn::make('member_name'),
-
                 TextColumn::make('plan_name'),
-
                 TextColumn::make('status_text')->label('Status')
                     ->badge()
                     ->color(fn (Membership $membership) => $membership->status ? 'success' : 'warning'),
@@ -92,7 +90,6 @@ class MembershipResource extends Resource
                     ->dateTime()->sortable(),
             ])
             ->filters([
-
                 Tables\Filters\SelectFilter::make('user_id')
                     ->label('Member Name')
                     ->searchable()
@@ -110,9 +107,6 @@ class MembershipResource extends Resource
                     ->options(
                         fn () => Plan::all()->pluck('name', 'id'),
                     ),
-
-
-
                 Filter::make('created_at')
                     ->form([
                         DatePicker::make('start_date'),

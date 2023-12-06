@@ -9,7 +9,7 @@ use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
 use Filament\Infolists\Components;
 use Filament\Infolists\Infolist;
-
+use Filament\Infolists\Components\Actions as InfoAction;
 
 class EditMembership extends EditRecord
 {
@@ -31,10 +31,16 @@ class EditMembership extends EditRecord
             ->record($user)
             ->schema([
                 Components\Section::make('Member')
+                    ->headerActions([
+                        InfoAction\Action::make('view information')
+                            ->url(fn (User $user): string => route('filament.admin.resources.members.view', $user->id)),
+                        InfoAction\Action::make('view-memberships')
+                            ->label('All membership plans')
+                            ->url(fn (User $user): string => route('filament.admin.resources.members.list-membership-plans', $user->id))
+                    ])
                     ->schema([
                         Components\Grid::make(1)
                             ->schema([
-
                                 Components\Group::make([
                                     Components\TextEntry::make('name')->label('Name'),
                                     Components\TextEntry::make('name')->label('Email'),

@@ -24,9 +24,7 @@ use Filament\Tables\Filters\SelectFilter;
 use Spatie\Permission\Models\Role;
 use Filament\Infolists\Components;
 use Filament\Infolists\Infolist;
-
-
-use Filament\Infolists\Components\Actions\Action as InfoAction;
+use Filament\Infolists\Components\Actions as InfoAction;
 use Filament;
 use Filament\Facades\Filament as FacadesFilament;
 
@@ -71,7 +69,7 @@ class MemberResource extends Resource
                 Section::make('Address')
                     ->relationship('profile')
                     ->schema([
-                        Forms\Components\TextInput::make('profile.phone')
+                        Forms\Components\TextInput::make('phone')
                             ->label('Mobile Phone')
                             ->required()
                             ->maxLength(250),
@@ -123,6 +121,7 @@ class MemberResource extends Resource
             ])
             ->filters([
                 Tables\Filters\SelectFilter::make('roles')
+                    ->label('Member Type')
                     ->relationship(
                         'roles',
                         'name',
@@ -145,7 +144,7 @@ class MemberResource extends Resource
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                    //Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ]);
     }
@@ -173,6 +172,13 @@ class MemberResource extends Resource
         return $infolist
             ->schema([
                 Components\Section::make('Profile')
+                    ->headerActions([
+                        InfoAction\Action::make('edit')
+                            ->url(fn (User $user): string => route('filament.admin.resources.members.edit', $user->id)),
+                        InfoAction\Action::make('view-memberships')
+                            ->label('All membership plans')
+                            ->url(fn (User $user): string => route('filament.admin.resources.members.list-membership-plans', $user->id))
+                    ])
                     ->schema([
                         Components\Grid::make(1)
                             ->schema([

@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name')->nullable();
             $table->string('description')->nullable();
+            $table->string('period')->nullable();
             $table->double('price');
             $table->timestamps();
         });
