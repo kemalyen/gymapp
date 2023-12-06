@@ -72,8 +72,10 @@ class MembershipResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->query(Membership::query()->orderByDesc('created_at'))
             ->columns([
                 TextColumn::make('id')->label('Membership ID')
+                    ->sortable()
                     ->numeric(),
                 TextColumn::make('member_name'),
 
@@ -83,11 +85,11 @@ class MembershipResource extends Resource
                     ->badge()
                     ->color(fn (Membership $membership) => $membership->status ? 'success' : 'warning'),
 
-                TextColumn::make('start_date')->label('Start Date')->dateTime('d M Y'),
-                TextColumn::make('end_date')->label('End Date')->dateTime('d M Y'),
+                TextColumn::make('start_date')->label('Start Date')->dateTime('d M Y')->sortable(),
+                TextColumn::make('end_date')->label('End Date')->dateTime('d M Y')->sortable(),
 
                 TextColumn::make('created_at')
-                    ->dateTime(),
+                    ->dateTime()->sortable(),
             ])
             ->filters([
 

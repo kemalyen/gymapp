@@ -38,7 +38,6 @@ class ListMembershipPlans extends Page implements HasTable
         $this->user = User::find($record);
     }
 
-
     public function table(Table $table): Table
     {
         return $table

@@ -23,4 +23,14 @@ class Attendance extends Model
     {
         return $this->created_at->format('d M Y H:i');
     }
+
+    public function getUserNameAttribute()
+    {
+        return $this->user?->name;
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }
