@@ -32,6 +32,13 @@ class User extends Authenticatable implements FilamentUser
         return true; //str_ends_with($this->email, '@yourdomain.com') && $this->hasVerifiedEmail();
     }
 
+    protected static function booted(): void
+    {
+        static::creating(function (User $user) {
+            $user->syncRoles('trial');
+        });
+    }
+
     /**
      * The attributes that should be hidden for serialization.
      *

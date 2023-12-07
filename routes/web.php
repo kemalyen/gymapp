@@ -1,5 +1,7 @@
 <?php
 
+use App\Livewire\JoinForm;
+use App\Livewire\Welcome;
 use App\Models\Attendance;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Route;
@@ -15,6 +17,13 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Route::get('/join', JoinForm::class)->name('join-form');
+Route::get('/welcome', Welcome::class)->name('welcome');
+Route::view('/membership', 'membership')->name('membership');
+Route::view('/gallery', 'gallery')->name('gallery');
+Route::view('/about-us', 'about-us')->name('about-us');
+
+/* 
 Route::get('/', function () {
 
     $attendences = Attendance::query()->where('created_at', '>', Carbon::now()->subDays(100))->latest()->get()->groupBy(function ($item) {
@@ -28,3 +37,4 @@ Route::get('/', function () {
     return;
     return view('welcome');
 });
+ */
