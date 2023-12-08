@@ -19,6 +19,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/join', JoinForm::class)->name('join-form');
 Route::get('/welcome', Welcome::class)->name('welcome');
+Route::view('/', 'home')->name('home');
 Route::view('/membership', 'membership')->name('membership');
 Route::view('/gallery', 'gallery')->name('gallery');
 Route::view('/about-us', 'about-us')->name('about-us');

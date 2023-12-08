@@ -23,9 +23,6 @@ class AdminPanelProvider extends PanelProvider
     public function panel(Panel $panel): Panel
     {
         return $panel
-            ->plugins([
-                \BezhanSalleh\FilamentShield\FilamentShieldPlugin::make()
-            ])
             ->topNavigation(true)
             //->viteTheme('resources/css/filament/admin/theme.css')
             ->default()
