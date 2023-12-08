@@ -91,6 +91,15 @@ class UserFactory extends Factory
         return $this->assignRole('trainer');
     }
 
+        /**
+     * Indicate that the user is an admin.
+     *
+     * @return Factory
+     */
+    public function user(): UserFactory
+    {
+        return $this->assignRole('user');
+    }
 
     /**
      * @param array|\Spatie\Permission\Contracts\Role|string  ...$roles

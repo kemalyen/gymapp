@@ -42,6 +42,7 @@ class UserResource extends Resource
         ->query(User::query()->role(['trainer', 'staff']))
             ->columns([
                 TextColumn::make('name')->searchable(),
+                TextColumn::make('email')->searchable(),
                 TextColumn::make('roles.name'),
             ])
             ->filters([
@@ -49,7 +50,7 @@ class UserResource extends Resource
                     ->relationship(
                         'roles',
                         'name',
-                        fn (Builder $query) => $query->whereIn('name', ['trainer', 'staff'])
+                        fn (Builder $query) => $query->whereIn('name', ['trainer', 'staff', 'sales'])
                     ),
             ])
             ->actions([

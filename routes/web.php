@@ -4,6 +4,7 @@ use App\Livewire\JoinForm;
 use App\Livewire\Welcome;
 use App\Models\Attendance;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -24,18 +25,12 @@ Route::view('/membership', 'membership')->name('membership');
 Route::view('/gallery', 'gallery')->name('gallery');
 Route::view('/about-us', 'about-us')->name('about-us');
 
-/* 
-Route::get('/', function () {
 
-    $attendences = Attendance::query()->where('created_at', '>', Carbon::now()->subDays(100))->latest()->get()->groupBy(function ($item) {
-        return $item->created_at->format('d-M-y');
-    });
+Route::get('/debug', function () {
 
-    foreach($attendences as $attendence){
-        echo '<p>'. $attendence->first()->created_at->format('d-M-y') .' :: '. $attendence->count(). '</p>'.PHP_EOL;
-    }
+$user = Auth::user();
+return ($user->role(['admin', 'sales'])) ? true : false;
 
-    return;
-    return view('welcome');
+
 });
- */
+ 
