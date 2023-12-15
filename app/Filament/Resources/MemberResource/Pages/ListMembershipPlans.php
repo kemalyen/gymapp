@@ -92,7 +92,7 @@ class ListMembershipPlans extends Page implements HasTable
 
                                 Components\Group::make([
                                     Components\TextEntry::make('name')->label('Name'),
-                                    Components\TextEntry::make('name')->label('Email'),
+                                    Components\TextEntry::make('email')->label('Email'),
                                     Components\TextEntry::make('phone')->label('Mobile Phone'),
                                 ])->columns(3),
 

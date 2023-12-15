@@ -18,7 +18,7 @@ class UserPolicy
      */
     public function viewAny(User $user): bool
     {
-        return ($user->role(['admin'])) ? true : false;
+        return ($user->hasRole(['admin'])) ? true : false;
     }
 
     /**
@@ -30,7 +30,7 @@ class UserPolicy
      */
     public function view(User $user, User $membership): bool
     {
-        return ($user->role(['admin'])) ? true : false;
+        return ($user->hasRole(['admin'])) ? true : false;
     }
 
     /**
@@ -41,7 +41,7 @@ class UserPolicy
      */
     public function create(User $user): bool
     {
-        return ($user->role(['admin'])) ? true : false;
+        return ($user->hasRole(['admin'])) ? true : false;
     }
 
     /**
@@ -53,7 +53,7 @@ class UserPolicy
      */
     public function update(User $user, User $membership): bool
     {
-        return ($user->role(['admin'])) ? true : false;
+        return ($user->hasRole(['admin'])) ? true : false;
     }
 
     /**
@@ -65,7 +65,7 @@ class UserPolicy
      */
     public function delete(User $user, User $membership): bool
     {
-        return ($user->role(['admin'])) ? true : false;
+        return ($user->hasRole(['admin'])) ? true : false;
     }
 
     /**
@@ -76,7 +76,7 @@ class UserPolicy
      */
     public function deleteAny(User $user): bool
     {
-        return ($user->role(['admin'])) ? true : false;
+        return ($user->hasRole(['admin'])) ? true : false;
     }
 
     /**
@@ -88,7 +88,7 @@ class UserPolicy
      */
     public function forceDelete(User $user, Membership $membership): bool
     {
-        return ($user->role(['admin'])) ? true : false;
+        return ($user->hasRole(['admin'])) ? true : false;
     }
 
     /**
@@ -99,7 +99,7 @@ class UserPolicy
      */
     public function forceDeleteAny(User $user): bool
     {
-        return ($user->role(['admin'])) ? true : false;
+        return ($user->hasRole(['admin'])) ? true : false;
     }
 
     /**
@@ -111,7 +111,7 @@ class UserPolicy
      */
     public function restore(User $user, Membership $membership): bool
     {
-        return ($user->role(['admin'])) ? true : false;
+        return ($user->hasRole(['admin'])) ? true : false;
     }
 
     /**
@@ -122,7 +122,7 @@ class UserPolicy
      */
     public function restoreAny(User $user): bool
     {
-        return ($user->role(['admin'])) ? true : false;
+        return ($user->hasRole(['admin'])) ? true : false;
     }
 
     /**
@@ -134,7 +134,7 @@ class UserPolicy
      */
     public function replicate(User $user, Membership $membership): bool
     {
-        return ($user->role(['admin'])) ? true : false;
+        return ($user->hasRole(['admin'])) ? true : false;
     }
 
     /**
@@ -145,7 +145,7 @@ class UserPolicy
      */
     public function reorder(User $user): bool
     {
-        return ($user->role(['admin'])) ? true : false;
+        return ($user->hasRole(['admin'])) ? true : false;
     }
 
 }

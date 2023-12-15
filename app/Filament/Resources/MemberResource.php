@@ -55,15 +55,11 @@ class MemberResource extends Resource
                             ->maxLength(250)
                             ->unique(User::class, 'email', ignoreRecord: true),
 
-
                         Select::make('roles')->relationship(
                             'roles',
                             'name',
-
                             modifyQueryUsing: fn (Builder $query) => $query->whereIn('name', ['member', 'trial']),
                         )->required(),
-
-
 
                     ]),
                 Section::make('Address')

@@ -19,7 +19,7 @@ class PlanPolicy
      */
     public function viewAny(User $user): bool
     {
-        return ($user->role(['admin'])) ? true : false;
+        return ($user->hasRole(['admin'])) ? true : false;
     }
 
     /**
@@ -31,7 +31,7 @@ class PlanPolicy
      */
     public function view(User $user, Plan $plan): bool
     {
-        return ($user->role(['admin'])) ? true : false;
+        return ($user->hasRole(['admin'])) ? true : false;
     }
 
     /**
@@ -42,31 +42,31 @@ class PlanPolicy
      */
     public function create(User $user): bool
     {
-        return ($user->role(['admin'])) ? true : false;
+        return ($user->hasRole(['admin'])) ? true : false;
     }
 
     /**
      * Determine whether the user can update the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\Membership  $membership
+     * @param  \App\Models\Plan  $plan
      * @return bool
      */
-    public function update(User $user, Membership $membership): bool
+    public function update(User $user, Plan $plan): bool
     {
-        return ($user->role(['admin'])) ? true : false;
+        return ($user->hasRole(['admin'])) ? true : false;
     }
 
     /**
      * Determine whether the user can delete the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\Membership  $membership
+     * @param  \App\Models\Plan  $plan
      * @return bool
      */
-    public function delete(User $user, Membership $membership): bool
+    public function delete(User $user, Plan $plan): bool
     {
-        return ($user->role(['admin'])) ? true : false;
+        return ($user->hasRole(['admin'])) ? true : false;
     }
 
     /**
@@ -77,7 +77,7 @@ class PlanPolicy
      */
     public function deleteAny(User $user): bool
     {
-        return ($user->role(['admin'])) ? true : false;
+        return ($user->hasRole(['admin'])) ? true : false;
     }
 
     /**
@@ -89,7 +89,7 @@ class PlanPolicy
      */
     public function forceDelete(User $user, Membership $membership): bool
     {
-        return ($user->role(['admin'])) ? true : false;
+        return ($user->hasRole(['admin'])) ? true : false;
     }
 
     /**
@@ -100,7 +100,7 @@ class PlanPolicy
      */
     public function forceDeleteAny(User $user): bool
     {
-        return ($user->role(['admin'])) ? true : false;
+        return ($user->hasRole(['admin'])) ? true : false;
     }
 
     /**
@@ -112,7 +112,7 @@ class PlanPolicy
      */
     public function restore(User $user, Membership $membership): bool
     {
-        return ($user->role(['admin'])) ? true : false;
+        return ($user->hasRole(['admin'])) ? true : false;
     }
 
     /**
@@ -123,7 +123,7 @@ class PlanPolicy
      */
     public function restoreAny(User $user): bool
     {
-        return ($user->role(['admin'])) ? true : false;
+        return ($user->hasRole(['admin'])) ? true : false;
     }
 
     /**
@@ -135,7 +135,7 @@ class PlanPolicy
      */
     public function replicate(User $user, Membership $membership): bool
     {
-        return ($user->role(['admin'])) ? true : false;
+        return ($user->hasRole(['admin'])) ? true : false;
     }
 
     /**
@@ -146,7 +146,7 @@ class PlanPolicy
      */
     public function reorder(User $user): bool
     {
-        return ($user->role(['admin'])) ? true : false;
+        return ($user->hasRole(['admin'])) ? true : false;
     }
 
 }

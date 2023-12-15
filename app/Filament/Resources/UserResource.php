@@ -15,7 +15,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 use App\Filament\Forms\Components\LocalizedCountrySelect;
-
+use Filament\Forms\Components\Select;
 use Filament\Tables\Filters\SelectFilter;
 use Spatie\Permission\Models\Role;
 use Filament\Infolists\Components;
@@ -32,14 +32,31 @@ class UserResource extends Resource
     {
         return $form
             ->schema([
-                //
+                Forms\Components\TextInput::make('name')
+                    ->label('Full Name')
+                    ->required()
+                    ->maxLength(250),
+
+                Forms\Components\TextInput::make('email')
+                    ->label('Email')
+                    ->required()
+                    ->maxLength(250)
+                    ->unique(User::class, 'email', ignoreRecord: true),
+
+
+                Select::make('roles')->relationship(
+                    'roles',
+                    'name',
+
+                    modifyQueryUsing: fn (Builder $query) => $query->whereIn('name', ['trainer', 'staff', 'sales']),
+                )->required(),
             ]);
     }
 
     public static function table(Table $table): Table
     {
         return $table
-        ->query(User::query()->role(['trainer', 'staff']))
+            ->query(User::query()->role(['trainer', 'staff', 'sales']))
             ->columns([
                 TextColumn::make('name')->searchable(),
                 TextColumn::make('email')->searchable(),
@@ -88,19 +105,14 @@ class UserResource extends Resource
 
                 Components\Section::make('Profile')
                     ->schema([
- 
+                        Components\Group::make([
+                            Components\TextEntry::make('name')->label('Name'),
+                            Components\TextEntry::make('email')->label('Email'),
+                            Components\TextEntry::make('profile.phone')->label('Mobile Phone'),
+                            Components\TextEntry::make('user.role')->label('Role'),
+                        ])->columns(3),
 
-                                Components\Group::make([
-                                    Components\TextEntry::make('name')->label('Name'),
-                                    Components\TextEntry::make('name')->label('Email'),
-                                    Components\TextEntry::make('profile.phone')->label('Mobile Phone'),
-                                ])->columns(3),
-                            
                     ]),
-
-
- 
-
                 Components\Section::make('Contact Information')
                     ->schema([
                         Components\Grid::make(1)
