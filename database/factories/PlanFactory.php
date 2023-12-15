@@ -18,7 +18,9 @@ class PlanFactory extends Factory
     {
         return [
             'name' => ucfirst($this->faker->safeColorName),
-            'price' => $this->faker->randomFloat(0, 20, 75)
+            'description' => ucfirst($this->faker->sentence),
+            'price' => $this->faker->randomFloat(0, 20, 75),
+            'period' => 0
         ];
     }
 }

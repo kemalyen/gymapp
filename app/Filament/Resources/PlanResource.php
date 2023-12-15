@@ -22,6 +22,7 @@ class PlanResource extends Resource
             ->schema([
                 Forms\Components\TextInput::make('name')->required(),
                 Forms\Components\Textarea::make('description'),
+                Forms\Components\Textarea::make('period'),
                 Forms\Components\TextInput::make('price')
                     ->required()
                     ->numeric()
@@ -40,7 +41,7 @@ class PlanResource extends Resource
                 Tables\Columns\TextColumn::make('price')
                     ->money('gbp')
                     ->sortable(),
- 
+
             ])
             ->filters([
                 //
