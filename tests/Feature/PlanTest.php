@@ -2,13 +2,24 @@
 
 use App\Filament\Resources\PlanResource;
 use App\Models\Plan;
+use App\Models\User;
 
-use function Pest\Livewire\livewire;
- 
+//use function Pest\Livewire\livewire;
+use Livewire\Livewire;
+use function Pest\Laravel\actingAs;
+use function Pest\Laravel\get;
+use function Pest\Laravel\seed;
+
+beforeEach(function () {
+    seed();
+    $this->adminUser = User::whereEmail('test@example.com')->first();
+    actingAs($this->adminUser);
+});
+
 it('can create', function () {
     $newData = Plan::factory()->create();
  
-    livewire(PlanResource\Pages\CreatePlan::class)
+    Livewire::test(PlanResource\Pages\CreatePlan::class)
         ->fillForm([
             'name' => $newData->name,
             'price' => $newData->price,
@@ -30,8 +41,8 @@ it('can save', function () {
     $plan = Plan::factory()->create();
     $new_post = Plan::factory()->create();
  
-    livewire(PlanResource\Pages\EditPlan::class, [
-        'record' => $new_post->getRouteKey(),
+    Livewire::test(PlanResource\Pages\EditPlan::class, [
+        'record' => $plan->getRouteKey(),
     ])
         ->fillForm([
             'name' => $new_post->name,

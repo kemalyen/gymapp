@@ -10,17 +10,12 @@ use Spatie\Permission\Models\Role;
 abstract class TestCase extends BaseTestCase
 {
     use CreatesApplication;
-    use LazilyRefreshDatabase;
+    //use LazilyRefreshDatabase;
+    public $adminUser;
 
     protected function setUp(): void
     {
         parent::setUp();
-        Role::create(['name' => 'member']);
-        Role::create(['name' => 'admin']);
-        Role::create(['name' => 'trainer']);
-        Role::create(['name' => 'staff']);
-        Role::create(['name' => 'sales']);
-        Role::create(['name' => 'trial']);
-        $this->actingAs(User::factory()->admin()->create());
+
     }
 }
