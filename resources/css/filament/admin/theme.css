@@ -1,0 +1,35 @@
+@import '/vendor/filament/filament/resources/css/theme.css';
+
+@config 'tailwind.config.js';
+
+.filament-main-topbar {
+    position: relative;
+}
+
+.fi-topbar-item {
+    align-items: end;
+}
+
+.fi-topbar {
+    background: #E52928 no-repeat top !important;
+}
+ 
+.fi-logo{
+    margin-right: 130px;
+}
+
+nav {
+    background: #E52928 url(/images/background.png) no-repeat top !important;
+}
+
+.fi-sidebar-header {
+    background: #E52928 !important;
+}
+
+.fi-sidebar-nav {
+    background: #E52928 !important;
+}
+
+.fi-breadcrumbs {
+    background: #FAFAFA !important;
+}
