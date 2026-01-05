@@ -8,7 +8,7 @@ use Illuminate\Support\Carbon;
 
 class AttendenceChart extends ChartWidget
 {
-    protected static ?string $heading = 'Attendence Overview';
+    protected ?string $heading = 'Attendence Overview';
 
     protected static ?int $sort = 1;
 

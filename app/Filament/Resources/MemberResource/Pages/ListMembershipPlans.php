@@ -2,6 +2,12 @@
 
 namespace App\Filament\Resources\MemberResource\Pages;
 
+use Filament\Actions\Action;
+use Filament\Schemas\Schema;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Grid;
+use Filament\Schemas\Components\Group;
+use Filament\Infolists\Components\TextEntry;
 use App\Filament\Resources\MemberResource;
 use App\Filament\Resources\MembershipResource;
 use Filament\Actions;
@@ -19,8 +25,6 @@ use Illuminate\Database\Eloquent\Builder;
 use Filament\Forms\Components\DatePicker;
 use Filament\Tables\Columns\BadgeColumn;
 use Filament\Infolists\Components;
-use Filament\Infolists\Infolist;
-use Filament\Tables\Actions\Action;
 use Filament\Tables\Contracts\HasTable;
 
 class ListMembershipPlans extends Page implements HasTable
@@ -29,7 +33,7 @@ class ListMembershipPlans extends Page implements HasTable
 
     protected static string $resource = MemberResource::class;
 
-    protected static string $view = 'filament.resources.member-resource.pages.list-plans';
+    protected string $view = 'filament.resources.member-resource.pages.list-plans';
 
 
     public $user;
@@ -55,7 +59,7 @@ class ListMembershipPlans extends Page implements HasTable
             ->filters([
 
                 Filter::make('created_at')
-                    ->form([
+                    ->schema([
                         DatePicker::make('start_date'),
                         DatePicker::make('end_date'),
                     ])
@@ -71,36 +75,36 @@ class ListMembershipPlans extends Page implements HasTable
                             );
                     })
             ])
-            ->actions([
+            ->recordActions([
                 Action::make('edit')
                     ->url(fn (Membership $membership): string => route('filament.admin.resources.memberships.edit', ['record' => $membership->id]))
             ])
             ;
     }
 
-    public function memberInfo(Infolist $infolist): Infolist
+    public function memberInfo(Schema $schema): Schema
     {
-        return $infolist
+        return $schema
             ->record($this->user)
             ->schema([
 
-                Components\Section::make('Member')
+                Section::make('Member')
 
                     ->schema([
-                        Components\Grid::make(2)
+                        Grid::make(2)
                             ->schema([
 
-                                Components\Group::make([
-                                    Components\TextEntry::make('name')->label('Name'),
-                                    Components\TextEntry::make('email')->label('Email'),
-                                    Components\TextEntry::make('phone')->label('Mobile Phone'),
+                                Group::make([
+                                    TextEntry::make('name')->label('Name'),
+                                    TextEntry::make('email')->label('Email'),
+                                    TextEntry::make('phone')->label('Mobile Phone'),
                                 ])->columns(3),
 
-                                Components\Group::make([
-                                    Components\TextEntry::make('member_status')
+                                Group::make([
+                                    TextEntry::make('member_status')
                                         ->badge()
                                         ->color(fn (User $user) => $user->member_status != 'Active' ? 'warning' : 'success'),
-                                    Components\TextEntry::make('member_since')->label('Member Since')
+                                    TextEntry::make('member_since')->label('Member Since')
                                 ])->columns(2),
                             ])
                     ]),

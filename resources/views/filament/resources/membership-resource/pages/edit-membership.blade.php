@@ -1,11 +1,12 @@
-<x-filament-panels::page>
+ <x-filament::page>
 
-    {{ $this->memberInfo }}
+     {{ $this->memberInfo }}
+     <form wire:submit="save" id="form" class="grid gap-y-6">
+         {{ $this->form }}
 
-    <x-filament-panels::form wire:submit="save">
-        {{ $this->form }}
+         <div style="padding: 2rem;">
+             <x-filament::actions :actions="$this->getFormActions()" alignment="center" />
+         </div>
 
-        <x-filament-panels::form.actions :actions="$this->getCachedFormActions()" :full-width="$this->hasFullWidthFormActions()" />
-    </x-filament-panels::form>
-
-</x-filament-panels::page>
+     </form>
+ </x-filament::page>
