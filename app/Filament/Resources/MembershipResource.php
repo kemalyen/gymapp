@@ -2,6 +2,13 @@
 
 namespace App\Filament\Resources;
 
+use Filament\Schemas\Schema;
+use Filament\Schemas\Components\Section;
+use Filament\Tables\Filters\SelectFilter;
+use Filament\Actions\EditAction;
+use App\Filament\Resources\MembershipResource\Pages\ListMemberships;
+use App\Filament\Resources\MembershipResource\Pages\CreateMembership;
+use App\Filament\Resources\MembershipResource\Pages\EditMembership;
 use App\Filament\Resources\MembershipResource\Pages;
 use App\Filament\Resources\MembershipResource\RelationManagers;
 use App\Models\Plan;
@@ -9,10 +16,8 @@ use App\Models\Membership;
 use App\Models\User;
 use Filament\Forms;
 use Filament\Forms\Components\DatePicker;
-use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
@@ -25,14 +30,14 @@ class MembershipResource extends Resource
 {
     protected static ?string $model = Membership::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-rectangle-stack';
 
     protected static ?int $navigationSort = 3;
 
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
+        return $schema
+            ->components([
                 Section::make()
                     ->columns(1)->schema([
                         Select::make('user_id')
@@ -60,8 +65,8 @@ class MembershipResource extends Resource
                 Section::make()
                     ->columns(2)->schema(
                         [
-                            Forms\Components\DatePicker::make('start_date'),
-                            Forms\Components\DatePicker::make('end_date'),
+                            DatePicker::make('start_date'),
+                            DatePicker::make('end_date'),
 
                         ]
                     ),
@@ -90,25 +95,25 @@ class MembershipResource extends Resource
                     ->dateTime()->sortable(),
             ])
             ->filters([
-                Tables\Filters\SelectFilter::make('user_id')
+                SelectFilter::make('user_id')
                     ->label('Member Name')
                     ->searchable()
                     ->options(
                         fn () => User::query()->role(['member', 'trial'])->pluck('name', 'id'),
                     ),
 
-                Tables\Filters\SelectFilter::make('status')
+                SelectFilter::make('status')
                     ->options([
                         '0' => 'Inactive', '1' => 'Active'
                     ]),
 
-                Tables\Filters\SelectFilter::make('plan_id')
+                SelectFilter::make('plan_id')
                     ->label('Plan')
                     ->options(
                         fn () => Plan::all()->pluck('name', 'id'),
                     ),
                 Filter::make('created_at')
-                    ->form([
+                    ->schema([
                         DatePicker::make('start_date'),
                         DatePicker::make('end_date'),
                     ])
@@ -125,10 +130,10 @@ class MembershipResource extends Resource
                     }),
 
             ])
-            ->actions([
-                Tables\Actions\EditAction::make(),
+            ->recordActions([
+                EditAction::make(),
             ])
-            ->bulkActions([]);
+            ->toolbarActions([]);
     }
 
     public static function getRelations(): array
@@ -141,9 +146,9 @@ class MembershipResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListMemberships::route('/'),
-            'create' => Pages\CreateMembership::route('/create'),
-            'edit' => Pages\EditMembership::route('/{record}/edit'),
+            'index' => ListMemberships::route('/'),
+            'create' => CreateMembership::route('/create'),
+            'edit' => EditMembership::route('/{record}/edit'),
         ];
     }
 }

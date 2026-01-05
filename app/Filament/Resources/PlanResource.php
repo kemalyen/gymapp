@@ -2,10 +2,19 @@
 
 namespace App\Filament\Resources;
 
+use Filament\Schemas\Schema;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Textarea;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Actions\EditAction;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteBulkAction;
+use App\Filament\Resources\PlanResource\Pages\ListPlans;
+use App\Filament\Resources\PlanResource\Pages\CreatePlan;
+use App\Filament\Resources\PlanResource\Pages\EditPlan;
 use App\Filament\Resources\PlanResource\Pages;
 use App\Models\Plan;
 use Filament\Forms;
-use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -14,16 +23,16 @@ class PlanResource extends Resource
 {
     protected static ?string $model = Plan::class;
     protected static ?int $navigationSort = 4;
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-rectangle-stack';
 
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
-                Forms\Components\TextInput::make('name')->required(),
-                Forms\Components\Textarea::make('description'),
-                Forms\Components\Textarea::make('period'),
-                Forms\Components\TextInput::make('price')
+        return $schema
+            ->components([
+                TextInput::make('name')->required(),
+                Textarea::make('description'),
+                Textarea::make('period'),
+                TextInput::make('price')
                     ->required()
                     ->numeric()
                     ->prefix('£'),
@@ -34,11 +43,11 @@ class PlanResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('name')
+                TextColumn::make('name')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('description')
+                TextColumn::make('description')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('price')
+                TextColumn::make('price')
                     ->money('gbp')
                     ->sortable(),
 
@@ -46,12 +55,12 @@ class PlanResource extends Resource
             ->filters([
                 //
             ])
-            ->actions([
-                Tables\Actions\EditAction::make(),
+            ->recordActions([
+                EditAction::make(),
             ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+            ->toolbarActions([
+                BulkActionGroup::make([
+                    DeleteBulkAction::make(),
                 ]),
             ]);
     }
@@ -66,9 +75,9 @@ class PlanResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListPlans::route('/'),
-            'create' => Pages\CreatePlan::route('/create'),
-            'edit' => Pages\EditPlan::route('/{record}/edit'),
+            'index' => ListPlans::route('/'),
+            'create' => CreatePlan::route('/create'),
+            'edit' => EditPlan::route('/{record}/edit'),
         ];
     }
 }

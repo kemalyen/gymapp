@@ -2,6 +2,22 @@
 
 namespace App\Filament\Resources;
 
+use Filament\Schemas\Schema;
+use Filament\Schemas\Components\Section;
+use Filament\Forms\Components\TextInput;
+use Filament\Schemas\Components\Grid;
+use Filament\Actions\Action;
+use Filament\Actions\EditAction;
+use Filament\Actions\ViewAction;
+use Filament\Actions\BulkActionGroup;
+use App\Filament\Resources\MemberResource\Pages\ListMembers;
+use App\Filament\Resources\MemberResource\Pages\CreateMember;
+use App\Filament\Resources\MemberResource\Pages\EditMember;
+use App\Filament\Resources\MemberResource\Pages\ViewMember;
+use App\Filament\Resources\MemberResource\Pages\AttendanceReport;
+use App\Filament\Resources\MemberResource\Pages\ListMembershipPlans;
+use Filament\Schemas\Components\Group;
+use Filament\Infolists\Components\TextEntry;
 use App\Filament\Forms\Components\LocalizedCountrySelect;
 use App\Filament\Resources\MemberResource\Pages;
 use App\Filament\Resources\MemberResource\RelationManagers;
@@ -10,10 +26,7 @@ use Filament\Actions\CreateAction;
 use Filament\Forms;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Fieldset;
-use Filament\Forms\Components\Grid;
-use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -23,7 +36,6 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Spatie\Permission\Models\Role;
 use Filament\Infolists\Components;
-use Filament\Infolists\Infolist;
 use Filament\Infolists\Components\Actions as InfoAction;
 use Filament;
 use Filament\Facades\Filament as FacadesFilament;
@@ -36,20 +48,20 @@ class MemberResource extends Resource
 
     protected static ?string $model = User::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-rectangle-stack';
 
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
+        return $schema
+            ->components([
                 Section::make('Contact')
                     ->schema([
-                        Forms\Components\TextInput::make('name')
+                        TextInput::make('name')
                             ->label('Full Name')
                             ->required()
                             ->maxLength(250),
 
-                        Forms\Components\TextInput::make('email')
+                        TextInput::make('email')
                             ->label('Email')
                             ->required()
                             ->maxLength(250)
@@ -65,18 +77,18 @@ class MemberResource extends Resource
                 Section::make('Address')
                     ->relationship('profile')
                     ->schema([
-                        Forms\Components\TextInput::make('phone')
+                        TextInput::make('phone')
                             ->label('Mobile Phone')
                             ->required()
                             ->maxLength(250),
 
-                        Forms\Components\TextInput::make('address_line_1')
+                        TextInput::make('address_line_1')
 
                             ->label('Address line')
                             ->required()
                             ->maxLength(250)->columnSpan(2),
 
-                        Forms\Components\TextInput::make('address_line_2')
+                        TextInput::make('address_line_2')
 
                             ->label('Address line')
                             ->maxLength(250)->columnSpan(2),
@@ -84,12 +96,12 @@ class MemberResource extends Resource
                         Grid::make()
                             ->schema([
 
-                                Forms\Components\TextInput::make('post_code')
+                                TextInput::make('post_code')
                                     ->label('Post Code')
                                     ->required()
                                     ->maxLength(25),
 
-                                Forms\Components\TextInput::make('city')
+                                TextInput::make('city')
                                     ->label('City')
                                     ->required()
                                     ->maxLength(50),
@@ -116,7 +128,7 @@ class MemberResource extends Resource
                 TextColumn::make('membership_ending'),
             ])
             ->filters([
-                Tables\Filters\SelectFilter::make('roles')
+                SelectFilter::make('roles')
                     ->label('Member Type')
                     ->relationship(
                         'roles',
@@ -124,22 +136,22 @@ class MemberResource extends Resource
                         fn (Builder $query) => $query->whereIn('name', ['member', 'trial'])
                     ),
             ])
-            ->actions([
-                Tables\Actions\Action::make('attendence_report')
+            ->recordActions([
+                Action::make('attendence_report')
                     ->url(fn (User $user): string => static::getUrl('attendances', ['record' => $user->id]))
                     ->icon('heroicon-o-book-open'),
 
-                Tables\Actions\Action::make('member_plans')
+                Action::make('member_plans')
                     ->label('Membership Plan')
                     ->url(fn (User $user): string => static::getUrl('list-membership-plans', ['record' => $user->id]))
                     ->icon('heroicon-o-book-open'),
 
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\ViewAction::make(),
+                EditAction::make(),
+                ViewAction::make(),
 
             ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
+            ->toolbarActions([
+                BulkActionGroup::make([
                     //Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ]);
@@ -155,61 +167,61 @@ class MemberResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListMembers::route('/'),
-            'create' => Pages\CreateMember::route('/create'),
-            'edit' => Pages\EditMember::route('/{record}/edit'),
-            'view' => Pages\ViewMember::route('/{record}'),
-            'attendances' => Pages\AttendanceReport::route('/{record}/attendances'),
-            'list-membership-plans' => Pages\ListMembershipPlans::route('/{record}/list-membership-plans'),
+            'index' => ListMembers::route('/'),
+            'create' => CreateMember::route('/create'),
+            'edit' => EditMember::route('/{record}/edit'),
+            'view' => ViewMember::route('/{record}'),
+            'attendances' => AttendanceReport::route('/{record}/attendances'),
+            'list-membership-plans' => ListMembershipPlans::route('/{record}/list-membership-plans'),
         ];
     }
-    public static function infolist(Infolist $infolist): Infolist
+    public static function infolist(Schema $schema): Schema
     {
-        return $infolist
-            ->schema([
-                Components\Section::make('Profile')
+        return $schema
+            ->components([
+                Section::make('Profile')
                     ->headerActions([
-                        InfoAction\Action::make('edit')
+                        Action::make('edit')
                             ->url(fn (User $user): string => route('filament.admin.resources.members.edit', $user->id)),
-                        InfoAction\Action::make('view-memberships')
+                        Action::make('view-memberships')
                             ->label('All membership plans')
                             ->url(fn (User $user): string => route('filament.admin.resources.members.list-membership-plans', $user->id))
                     ])
                     ->schema([
-                        Components\Grid::make(1)
+                        Grid::make(1)
                             ->schema([
-                                Components\Group::make([
-                                    Components\TextEntry::make('name')->label('Name'),
-                                    Components\TextEntry::make('name')->label('Email'),
-                                    Components\TextEntry::make('member_since')->label('Member Since')
+                                Group::make([
+                                    TextEntry::make('name')->label('Name'),
+                                    TextEntry::make('name')->label('Email'),
+                                    TextEntry::make('member_since')->label('Member Since')
                                 ])->columns(3),
 
                             ])
                     ]),
 
 
-                Filament\Infolists\Components\Section::make('Membership')
+                Section::make('Membership')
                     ->schema([
-                        Components\Grid::make(4)
+                        Grid::make(4)
                             ->schema([
-                                Components\TextEntry::make('plan_name')->label('Membership Plan'),
-                                Components\TextEntry::make('member_status')
+                                TextEntry::make('plan_name')->label('Membership Plan'),
+                                TextEntry::make('member_status')
                                     ->badge()
                                     ->color(fn (User $user) => $user->member_status != 'Active' ? 'warning' : 'success'),
-                                Components\TextEntry::make('membership_started_at')->label('Started At'),
-                                Components\TextEntry::make('membership_ending_at')->label('Ending Date'),
+                                TextEntry::make('membership_started_at')->label('Started At'),
+                                TextEntry::make('membership_ending_at')->label('Ending Date'),
                             ]),
                     ])
                     ->collapsible(),
 
-                Components\Section::make('Contact Information')
+                Section::make('Contact Information')
                     ->schema([
-                        Components\Grid::make(3)
+                        Grid::make(3)
                             ->schema([
 
-                                Components\TextEntry::make('address')->label('Address')->html(true),
-                                Components\TextEntry::make('profile.phone')->label('Mobile Phone'),
-                                Components\TextEntry::make('membership_ending_at')->label('Ending Date'),
+                                TextEntry::make('address')->label('Address')->html(true),
+                                TextEntry::make('profile.phone')->label('Mobile Phone'),
+                                TextEntry::make('membership_ending_at')->label('Ending Date'),
                             ]),
                     ])
                     ->collapsible(),

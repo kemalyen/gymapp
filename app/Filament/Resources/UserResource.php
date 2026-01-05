@@ -2,11 +2,23 @@
 
 namespace App\Filament\Resources;
 
+use Filament\Schemas\Schema;
+use Filament\Forms\Components\TextInput;
+use Filament\Actions\EditAction;
+use Filament\Actions\ViewAction;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteBulkAction;
+use App\Filament\Resources\UserResource\Pages\ListUsers;
+use App\Filament\Resources\UserResource\Pages\CreateUser;
+use App\Filament\Resources\UserResource\Pages\EditUser;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Group;
+use Filament\Infolists\Components\TextEntry;
+use Filament\Schemas\Components\Grid;
 use App\Filament\Resources\UserResource\Pages;
 use App\Filament\Resources\UserResource\RelationManagers;
 use App\Models\User;
 use Filament\Forms;
-use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
@@ -19,25 +31,24 @@ use Filament\Forms\Components\Select;
 use Filament\Tables\Filters\SelectFilter;
 use Spatie\Permission\Models\Role;
 use Filament\Infolists\Components;
-use Filament\Infolists\Infolist;
 
 class UserResource extends Resource
 {
     protected static ?string $model = User::class;
 
     protected static ?int $navigationSort = 5;
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-rectangle-stack';
 
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
-                Forms\Components\TextInput::make('name')
+        return $schema
+            ->components([
+                TextInput::make('name')
                     ->label('Full Name')
                     ->required()
                     ->maxLength(250),
 
-                Forms\Components\TextInput::make('email')
+                TextInput::make('email')
                     ->label('Email')
                     ->required()
                     ->maxLength(250)
@@ -63,20 +74,20 @@ class UserResource extends Resource
                 TextColumn::make('roles.name'),
             ])
             ->filters([
-                Tables\Filters\SelectFilter::make('roles')
+                SelectFilter::make('roles')
                     ->relationship(
                         'roles',
                         'name',
                         fn (Builder $query) => $query->whereIn('name', ['trainer', 'staff', 'sales'])
                     ),
             ])
-            ->actions([
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\ViewAction::make(),
+            ->recordActions([
+                EditAction::make(),
+                ViewAction::make(),
             ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+            ->toolbarActions([
+                BulkActionGroup::make([
+                    DeleteBulkAction::make(),
                 ]),
             ]);
     }
@@ -91,33 +102,33 @@ class UserResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListUsers::route('/'),
-            'create' => Pages\CreateUser::route('/create'),
-            'edit' => Pages\EditUser::route('/{record}/edit'),
+            'index' => ListUsers::route('/'),
+            'create' => CreateUser::route('/create'),
+            'edit' => EditUser::route('/{record}/edit'),
         ];
     }
 
 
-    public static function infolist(Infolist $infolist): Infolist
+    public static function infolist(Schema $schema): Schema
     {
-        return $infolist
-            ->schema([
+        return $schema
+            ->components([
 
-                Components\Section::make('Profile')
+                Section::make('Profile')
                     ->schema([
-                        Components\Group::make([
-                            Components\TextEntry::make('name')->label('Name'),
-                            Components\TextEntry::make('email')->label('Email'),
-                            Components\TextEntry::make('profile.phone')->label('Mobile Phone'),
-                            Components\TextEntry::make('user.role')->label('Role'),
+                        Group::make([
+                            TextEntry::make('name')->label('Name'),
+                            TextEntry::make('email')->label('Email'),
+                            TextEntry::make('profile.phone')->label('Mobile Phone'),
+                            TextEntry::make('user.role')->label('Role'),
                         ])->columns(3),
 
                     ]),
-                Components\Section::make('Contact Information')
+                Section::make('Contact Information')
                     ->schema([
-                        Components\Grid::make(1)
+                        Grid::make(1)
                             ->schema([
-                                Components\TextEntry::make('address')->label('Address')->html(true),
+                                TextEntry::make('address')->label('Address')->html(true),
                             ]),
                     ])
 
